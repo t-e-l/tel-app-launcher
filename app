@@ -10,17 +10,9 @@ show_help(){
 }
 
 update_cache(){
-    if [ -f "$cachefile" ];then
-        old=$(<$cachefile)
-    else
-        old=""
-    fi
-    #su -c 'for i in $(ls /data/data); do if [[ ! "$(dumpsys package $i | grep system)" ]]; then echo $i;fi;done'  > $cachefile
-    su -c 'for i in $(ls /data/data); do  echo $i;done'  > $cachefile
-    fixterm
-    new=$(<$cachefile)
-    # Will only produce output if the full versions of grep and diffutils is installed
-    diff <(echo "$old") <(echo "$new") | grep "<\|>" ||:
+    am broadcast --user 0 \
+         --es com.termux.app.reload_style apps-cache \
+         -a com.termux.app.reload_style com.termux > /dev/null
 }
 
 fixterm(){
@@ -33,7 +25,8 @@ name=$(basename $0)
 OPTIND=1         # Reset in case getopts has been used previously in the shell.
 # Initialize our own variables
 update=false
-cachefile="$HOME/.local/share/termux-launcher-app-cache"
+cachefile="$HOME/.apps"
+namefile="$HOME/.app_names"
 while getopts "h?u" opt; do
     case "$opt" in
         h|\?)
@@ -54,17 +47,23 @@ if $update;then
 else
     if [ -f "$cachefile" ];then
         if [ -z "$pattern" ];then
-            app=`cat $cachefile | fzf`
+            app=`cat $namefile | fzf`
         else
-            app=`cat $cachefile | fzf -f "$pattern"|head -n 1`
+            app=`cat $namefile | fzf -f "$pattern"|head -n 1`
         fi
         if [ -n "$app" ];then
             echo "Opening $app"
+            activity=$(cat $cachefile | grep $app | cut -d "|" -f2 )
             # monkey messes with the rotation setting in android (why?), so we save it beforehand and restore it afterwards
             # This currently has a bug; if the user has locked the rotation to landscape running app will
             # Switch the rotation to portrait
-            accelerometer_rotation=`su -c settings get system accelerometer_rotation`
-            su -c "monkey -p $app -c android.intent.category.LAUNCHER 1" >/dev/null 2>&1
+            #disabling for non-root. maybe enable again with root check, or find non-root solution
+
+            #accelerometer_rotation=`su -c settings get system accelerometer_rotation`
+
+            #su -c "monkey -p $package_name -c android.intent.category.LAUNCHER 1" >/dev/null 2>&1
+
+            am start -n "$activity" --user 0
 fixterm
         else
             exit 1

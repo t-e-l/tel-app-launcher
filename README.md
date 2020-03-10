@@ -1,6 +1,6 @@
 # TEL App Launcher
 
-modified to work without root.
+modified to work without root. Only for modified termux that populate appcache file.
 
 # Installation
 
