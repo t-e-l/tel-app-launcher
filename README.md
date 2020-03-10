@@ -1,8 +1,6 @@
-# Termux App Launcher
+# TEL App Launcher
 
-Launch Android Apps from Termux
-
-*Requires Root*
+modified to work without root.
 
 # Installation
 
