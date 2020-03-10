@@ -53,7 +53,7 @@ else
         fi
         if [ -n "$app" ];then
             echo "Opening $app"
-            activity=$(cat $cachefile | grep $app | cut -d "|" -f2 )
+            activity=$(cat $cachefile | grep "$app" | cut -d "|" -f2 )
             # monkey messes with the rotation setting in android (why?), so we save it beforehand and restore it afterwards
             # This currently has a bug; if the user has locked the rotation to landscape running app will
             # Switch the rotation to portrait
