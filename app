@@ -47,9 +47,9 @@ if $update;then
 else
     if [ -f "$cachefile" ];then
         if [ -z "$pattern" ];then
-            app=`cat $namefile | fzf`
+            app=`cat $namefile | fzf | cut -d "|" -f1`
         else
-            app=`cat $namefile | fzf -f "$pattern"|head -n 1`
+            app=`cat $namefile | fzf -f "$pattern"|head -n 1 | cut -d "|" -f1`
         fi
         if [ -n "$app" ];then
             echo "Opening $app"
