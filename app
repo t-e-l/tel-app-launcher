@@ -63,7 +63,7 @@ else
 
             #su -c "monkey -p $package_name -c android.intent.category.LAUNCHER 1" >/dev/null 2>&1
 
-            am start -n "$activity" --user 0
+            am start -n "$activity" --user 0 > /dev/null 2>&1
 fixterm
         else
             exit 1
